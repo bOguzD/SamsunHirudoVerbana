@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Ürün Ekleme";
+}
+
+<div class="col-md-6">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Ürün Ekleme</h3>
+        </div>
+        <form method="post" id="productForm" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="ProductName">Ürün Adı(*)</label>
+                    <input type="text" class="form-control" name="ProductName" required placeholder="Ürün adı giriniz...">
+                </div>
+                <div class="form-group">
+                    <label for="Description">Ürün Açıklaması(*)</label>
+                    <input type="text" class="form-control" name="Description" required placeholder="Ürün açıklaması giriniz...">
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <select class="form-control" onchange="currencyChanged()" id="currencies" name="CurrencyCode" required="required">
+                            <option disabled selected style="display:none;">Döviz Seçiniz</option>
+                            <option value="TL">Türk Lirası</option>
+                            <option value="EUR">Euro</option>
+                        </select>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="checkbox" id="IsCurrentPrice" name="IsCurrentPrice" checked>
+                        <label for="IsCurrentPrice" class="custom-control-label">Varsayılan Fiyat</label>
+                    </div>
+                    &nbsp; &nbsp;
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="checkbox" id="IsCampaign" name="IsCampaign" >
+                        <label for="IsCampaign" class="custom-control-label">Kampanyalı Fiyat</label>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="input-group col-sm-6">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="currencySymbol"></span>
+                        </div>
+                        <input id="price" name="UnitPrice" type="number" min="0.00" step="0.50" placeholder="0,00" class="form-control" required disabled>
+                    </div>
+                    <div class="input-group col-sm-6">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Stok Bilgisi</span>
+                        </div>
+                        <input id="stockInfo" type="number" name="InStockQuantity" min="0" step="1" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required placeholder="0" class="form-control">
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="Name">Picture Name(*)</label>
+                    <input type="text" class="form-control" name="PictureName" required="required" placeholder="Picture Name...">
+                </div>
+                <div class="form-group">
+                    <label for="AltText">Picture Description (*)</label>
+                    <span class="alert-info">Bir boşluk bırakarak tanım yapılmalıdır.</span>
+                    <input type="text" class="form-control" name="AltText" required="required" placeholder="For instance; climbing mountain vs...">
+                </div>
+                <div class="form-group">
+                    <input type="file" name="File" class="btn btn-success col fileinput-button" accept="image/*" placeholder="Dosya Seçin" required="required" />
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" type="submit" value="Submit">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    var currencies = { TL: "TL", Euro: "EUR" };
+
+    function currencyChanged(){
+        $("#price").attr('disabled', false);
+        var currencyValue = $('#currencies :selected').val();
+        if(currencyValue == currencies.TL)
+            $("#currencySymbol").text('₺');
+        else if(currencyValue == currencies.Euro)
+            $("#currencySymbol").text('€');
+    }
+
+</script>

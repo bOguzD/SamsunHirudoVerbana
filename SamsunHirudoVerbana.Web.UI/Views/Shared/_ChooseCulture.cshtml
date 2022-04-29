@@ -1,0 +1,34 @@
+﻿@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestedCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
+        .ToList();
+
+}
+
+<select class="child-dropdown" onchange="changeCulture()" id="language" name="culture" asp-items="cultureItems" asp-for="@requestedCulture.RequestCulture.UICulture.Name">
+    </select>
+@*
+<li class="top-links-item">
+    <a href="@Url.Action("ChooseCulture","ResourceManager", new {culture ="@cultureItems[0].Value"})"><img src="/images/icons/flags/tr-TR.png" alt="Turkish">@cultureItems[0].Text</a>
+    <ul class="top-links-sub-menu">
+        <li class="top-links-item"><a href="@Url.Action("ChooseCulture","ResourceManager", new {culture = cultureItems[1].Value.ToString()} )"><img src="images/icons/flags/en-US.png" alt="Europe">European Union</a></li>
+    </ul>
+</li>
+*@
+
+<script type="text/javascript">
+    function changeCulture(){
+        var culture = $("#language :selected").val();
+        $.ajax({
+            url: '@Url.Action("ChooseCulture","ResourceManager", new {culture = "culture"})',
+            type: 'POST',
+            data: {culture: culture},
+            success: function(){
+                location.reload();
+            }
+        });
+    }
+</script>

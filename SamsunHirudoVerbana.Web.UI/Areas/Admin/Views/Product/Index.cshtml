@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "Ürün Listesi";
+    //Layout = "~/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@model IEnumerable<SamsunHirudoVerbana.Web.UI.Areas.Admin.Models.ProductViewModel>
+
+    <div id="ShowModal"></div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Ürün Listesi</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="listTable" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ürün Adı</th>
+                                    <th>Açıklama</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>Güncellenme Tarihi</th>
+                                    <th>Stokta Var mı?</th>
+                                    <th>Fotoğraf</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.ProductId</td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.CreatedDate.ToString("dddd, dd MMMM yyyy")</td>
+                                        @if (item.UpdatedDate.HasValue)
+                                        {
+                                            <td>@item.UpdatedDate.Value.ToString("dddd, dd MMMM yyyy")</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@item.UpdatedDate.GetValueOrDefault()</td>
+                                        }
+                                        <td>@(item.IsDeleted ?"Hayır":"Evet")</td>
+                                        @*<td>@Html.ActionLink("Silme","DeleteProduct", "Product", new {area = "Admin", productId = @item.ProductId}) </td>*@
+                                        <td><a href="@Url.Action("DeleteProduct", "Product", new {area = "Admin", productId = @item.ProductId })" class="btn btn-danger"><i class="fas fa-trash"> Sil</i></a></td>
+                                        <td><button type="button" class="btn btn-success" onclick="productModalOpen(@item.ProductId)"><i class="fas fa-edit">Düzenle</i></button></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script type="text/javascript">
+    $(function () {
+        $('#listTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true
+        });
+    });
+
+    function productModalOpen(productId){
+        debugger;
+        $.ajax({
+            url: "@Url.Action("EditProduct", "Product")",
+            data: {productId},
+            success: function(data){
+                $("#ShowModal").html(data);
+                $("#ShowModal").find('.modal').modal('show');
+            }
+        });
+    }
+</script>
